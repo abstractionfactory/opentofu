@@ -1,0 +1,1 @@
+# TofuBot: the bot that helps manage the OpenTofu repository

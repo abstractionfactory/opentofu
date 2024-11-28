@@ -1,0 +1,32 @@
+name: 🤖 TofuBot
+on:
+  create:
+  label:
+  issues:
+  pull_request:
+  issue_comment:
+concurrency:
+  group: tofubot
+  cancel-in-progress: false
+jobs:
+  tofubot:
+    name: 🤖 TofuBot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout: tools/tofubot
+      - name: Set up go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: tools/tofubot/go.mod
+      - name: Build TofuBot
+        working-directory: tools/tofubot
+        run: go build -o tofubot github.com/opentofu/opentofu/tools/tofubot/cmd/tofubot
+      - name: Run TofuBot
+        working-directory: tools/tofubot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./tofubot
